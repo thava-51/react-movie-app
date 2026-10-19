@@ -36,7 +36,7 @@ export default function FilterMoviesCard(props) {
         setGenres([genres[0], ...apiGenres]);
       });
       // eslint-disable-next-line
-  }, []);
+    }, []);
 
   const handleChange = (e, type, value) => {
     e.preventDefault()
