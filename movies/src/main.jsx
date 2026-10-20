@@ -1,6 +1,9 @@
 import { createRoot } from "react-dom/client";
+import { BrowserRouter, Route, Navigate, Routes } from "react-router";
+
 import HomePage from "./pages/homePage";
 import MovieDetailsPage from "./pages/movieDetailsPage";
+import MoviePage from "./pages/movieDetailsPage";
 
 const images = [
   "/kOVEVeg59E0wsnXmF9nrh6OmWII.jpg",
@@ -94,7 +97,15 @@ const movies = [sample, sample, sample, sample, sample, sample, sample];
 
 const App = () => {
   return (
-      <MovieDetailsPage movie={sample} images={images}/>
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/movies/:id" element={<MoviePage/>}/>
+          <Route path="/" element={<HomePage/>}/>
+          <Route path="*" element={<Navigate to="/"/>}/>
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 };
 
