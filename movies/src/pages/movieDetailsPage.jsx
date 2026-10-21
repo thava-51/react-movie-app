@@ -7,6 +7,7 @@ import ImageListItem from "@mui/material/ImageListItem";
 
 import MovieHeader from "../components/headerMovie/";
 import MovieDetails from "../components/movieDetails/";
+import { getMovie, getMovieImages } from "../api/tmdb-api";
 
 const MoviePage = (props) => {
   const { id } = useParams();
@@ -14,17 +15,16 @@ const MoviePage = (props) => {
   const [images, setImages] = useState([]);
 
   useEffect(() => {
-    fetch(
-      `https://api.themoviedb.org/3/movie/${id}?api_key=${import.meta.env.VITE_TMDB_KEY}`
-    )
-      .then((res) => {
-        return res.json();
-      })
-      .then((movie) => {
-        // console.log(movie)
-        setMovie(movie);
-      });
+    getMovie(id).then((movie) => {
+      setMovie(movie);
+    });
   }, [id]);
+
+  useEffect(() => {
+    getMovieImages(id).then((images) => {
+      setImages(images);
+    });
+  }, []);
 
   useEffect(() => {
     fetch(
