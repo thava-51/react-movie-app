@@ -2,8 +2,8 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Navigate, Routes } from "react-router";
 
 import HomePage from "./pages/homePage";
-import MovieDetailsPage from "./pages/movieDetailsPage";
 import MoviePage from "./pages/movieDetailsPage";
+import FavoriteMoviesPage from "./pages/favoriteMoviesPage";
 
 const images = [
   "/kOVEVeg59E0wsnXmF9nrh6OmWII.jpg",
@@ -100,6 +100,7 @@ const App = () => {
     <>
       <BrowserRouter>
         <Routes>
+          <Route path="/movies/favorites" element={<FavoriteMoviesPage/>}/>
           <Route path="/movies/:id" element={<MoviePage/>}/>
           <Route path="/" element={<HomePage/>}/>
           <Route path="*" element={<Navigate to="/"/>}/>
