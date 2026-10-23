@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import PageTemplate from '../components/templateMovieListPage'
+import PageTemplate from "../components/templateMovieListPage";
 import { getMovies } from "../api/tmdb-api";
 
 const HomePage = (props) => {
