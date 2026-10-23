@@ -5,6 +5,7 @@ import HomePage from "./pages/homePage";
 import MoviePage from "./pages/movieDetailsPage";
 import FavoriteMoviesPage from "./pages/favoriteMoviesPage";
 import MovieReviewPage from "./pages/movieReviewPage";
+import SiteHeader from './components/siteHeader'
 
 const images = [
   "/kOVEVeg59E0wsnXmF9nrh6OmWII.jpg",
@@ -100,6 +101,7 @@ const App = () => {
   return (
     <>
       <BrowserRouter>
+        <SiteHeader/>
         <Routes>
           <Route path="/movies/favorites" element={<FavoriteMoviesPage/>}/>
           <Route path="/movies/:id" element={<MoviePage/>}/>
