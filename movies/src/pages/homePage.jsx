@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import PageTemplate from "../components/templateMovieListPage";
 import { getMovies } from "../api/tmdb-api";
 import Spinner from '../components/spinner';
+import AddToFavoritesIcon from '../components/cardIcons/addToFavorites'
 
 const HomePage = (props) => {
   const { data, error, isPending, isError  } = useQuery({
@@ -28,7 +29,9 @@ const HomePage = (props) => {
     <PageTemplate
       title='Discover Movies'
       movies={movies}
-      selectFavorite={addToFavorites}
+      action={(movie) => {
+        return <AddToFavoritesIcon movie={movie}/>
+      }}
     />
   );
 };
