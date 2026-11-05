@@ -31,7 +31,6 @@ export const getUpcomingMovies = () => {
 };
 
 export const getMovie = (args) => {
-  console.log(args)
   const [, idPart] = args.queryKey;
   const { id } = idPart;
   return fetch(
