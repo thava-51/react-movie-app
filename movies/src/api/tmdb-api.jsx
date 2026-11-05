@@ -49,6 +49,11 @@ export const getMovieReviews = ({ queryKey }) => {
   return tmdbFetch(`movie/${id}/reviews`);
 };
 
+export const getMovieCredits = ({ queryKey }) => {
+  const [, { id }] = queryKey;
+  return tmdbFetch(`movie/${id}/credits`, { language: "en-US" });
+};
+
 // Additional filters apart from lab
 export const getNowPlaying = () => {
   return tmdbFetch("movie/now_playing", { language: "en-US", page: 1 });
@@ -58,8 +63,6 @@ export const getTopRated = () => {
   return tmdbFetch("movie/top_rated", { language: "en-US", page: 1 });
 };
 
-// Trending movies for a time window ("day" or "week").
-// The window is the second element of the queryKey, e.g. ["trending", { window: "week" }].
 export const getTrending = ({ queryKey }) => {
   const [, { window }] = queryKey;
   return tmdbFetch(`trending/movie/${window}`, { language: "en-US", page: 1 });
