@@ -1,103 +1,50 @@
-export const getMovies = () => {
-  return fetch(
-    `https://api.themoviedb.org/3/discover/movie?api_key=${import.meta.env.VITE_TMDB_KEY}&language=en-US&include_adult=false&include_video=false&page=1`
-  ).then((response) => {
+const BASE_URL = "https://api.themoviedb.org/3";
+
+// Shared request helper used by every TMDB call.
+const tmdbFetch = (path, params = {}) => {
+  const query = new URLSearchParams({
+    api_key: import.meta.env.VITE_TMDB_KEY,
+    ...params,
+  });
+  return fetch(`${BASE_URL}/${path}?${query}`).then((response) => {
     if (!response.ok) {
       return response.json().then((error) => {
         throw new Error(error.status_message || "Something went wrong");
       });
     }
     return response.json();
-  })
-  .catch((error) => {
-      throw error
+  });
+};
+
+export const getMovies = () => {
+  return tmdbFetch("discover/movie", {
+    language: "en-US",
+    include_adult: false,
+    include_video: false,
+    page: 1,
   });
 };
 
 export const getUpcomingMovies = () => {
-  return fetch(
-    `https://api.themoviedb.org/3/movie/upcoming?api_key=${import.meta.env.VITE_TMDB_KEY}&language=en-US&page=1`
-  ).then((response) => {
-    if (!response.ok) {
-      return response.json().then((error) => {
-        throw new Error(error.status_message || "Something went wrong");
-      });
-    }
-    return response.json();
-  })
-  .catch((error) => {
-      throw error
-  });
+  return tmdbFetch("movie/upcoming", { language: "en-US", page: 1 });
 };
 
-export const getMovie = (args) => {
-  const [, idPart] = args.queryKey;
-  const { id } = idPart;
-  return fetch(
-    `https://api.themoviedb.org/3/movie/${id}?api_key=${import.meta.env.VITE_TMDB_KEY}`
-  ).then((response) => {
-    if (!response.ok) {
-      return response.json().then((error) => {
-        throw new Error(error.status_message || "Something went wrong");
-      });
-    }
-    return response.json();
-  })
-  .catch((error) => {
-    throw error
- });
+// The functions below receive react-query's context object.
+export const getMovie = ({ queryKey }) => {
+  const [, { id }] = queryKey;
+  return tmdbFetch(`movie/${id}`);
 };
 
 export const getGenres = () => {
-  return fetch(
-      "https://api.themoviedb.org/3/genre/movie/list?api_key=" +
-        import.meta.env.VITE_TMDB_KEY +
-        "&language=en-US"
-    ).then( (response) => {
-      if (!response.ok) {
-        return response.json().then((error) => {
-          throw new Error(error.status_message || "Something went wrong");
-        });
-      }
-      return response.json();
-    })
-    .catch((error) => {
-      throw error
-   });
+  return tmdbFetch("genre/movie/list", { language: "en-US" });
 };
 
 export const getMovieImages = ({ queryKey }) => {
-    const [, idPart] = queryKey;
-    const { id } = idPart;
-    return fetch(
-      `https://api.themoviedb.org/3/movie/${id}/images?api_key=${import.meta.env.VITE_TMDB_KEY}`
-    ).then( (response) => {
-      if (!response.ok) {
-        return response.json().then((error) => {
-          throw new Error(error.status_message || "Something went wrong");
-        });
-      }
-      return response.json();
-    })
-    .catch((error) => {
-      throw error
-  });
+  const [, { id }] = queryKey;
+  return tmdbFetch(`movie/${id}/images`);
 };
 
-export const getMovieReviews = ({queryKey}) => {
-  const [, idPart] = queryKey;
-    const { id } = idPart;
-    return fetch(
-      `https://api.themoviedb.org/3/movie/${id}/reviews?api_key=${import.meta.env.VITE_TMDB_KEY}`
-    ).then( (response) => {
-      if (!response.ok) {
-        return response.json().then((error) => {
-          throw new Error(error.status_message || "Something went wrong");
-        });
-      }
-      return response.json();
-    })
-    .catch((error) => {
-      throw error
-  });
+export const getMovieReviews = ({ queryKey }) => {
+  const [, { id }] = queryKey;
+  return tmdbFetch(`movie/${id}/reviews`);
 };
