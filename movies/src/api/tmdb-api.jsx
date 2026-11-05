@@ -48,3 +48,8 @@ export const getMovieReviews = ({ queryKey }) => {
   const [, { id }] = queryKey;
   return tmdbFetch(`movie/${id}/reviews`);
 };
+
+// Additional filters apart from lab
+export const getNowPlaying = () => {
+  return tmdbFetch("movie/now_playing", { language: "en-US", page: 1 });
+};
