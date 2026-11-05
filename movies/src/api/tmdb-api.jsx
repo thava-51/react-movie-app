@@ -53,3 +53,7 @@ export const getMovieReviews = ({ queryKey }) => {
 export const getNowPlaying = () => {
   return tmdbFetch("movie/now_playing", { language: "en-US", page: 1 });
 };
+
+export const getTopRated = () => {
+  return tmdbFetch("movie/top_rated", { language: "en-US", page: 1 });
+};
