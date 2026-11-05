@@ -57,3 +57,10 @@ export const getNowPlaying = () => {
 export const getTopRated = () => {
   return tmdbFetch("movie/top_rated", { language: "en-US", page: 1 });
 };
+
+// Trending movies for a time window ("day" or "week").
+// The window is the second element of the queryKey, e.g. ["trending", { window: "week" }].
+export const getTrending = ({ queryKey }) => {
+  const [, { window }] = queryKey;
+  return tmdbFetch(`trending/movie/${window}`, { language: "en-US", page: 1 });
+};
