@@ -67,3 +67,13 @@ export const getTrending = ({ queryKey }) => {
   const [, { window }] = queryKey;
   return tmdbFetch(`trending/movie/${window}`, { language: "en-US", page: 1 });
 };
+
+export const getPerson = ({ queryKey }) => {
+  const [, { id }] = queryKey;
+  return tmdbFetch(`person/${id}`, { language: "en-US" });
+};
+
+export const getMoviefromPerson = ({ queryKey }) => {
+  const [, { id }] = queryKey;
+  return tmdbFetch(`person/${id}/movie_credits`, { language: "en-US" });
+};

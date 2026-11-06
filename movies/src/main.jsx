@@ -11,6 +11,7 @@ import NowPlayingPage from "./pages/nowPlayingMoviePage";
 import TopRatedPage from "./pages/topRatedPage";
 import TrendingPage from "./pages/trendingPage";
 import MoviePage from "./pages/movieDetailsPage";
+import ActorDetailsPage from "./pages/actorDetailsPage";
 import FavoriteMoviesPage from "./pages/favoriteMoviesPage";
 import MovieReviewPage from "./pages/movieReviewPage";
 import SiteHeader from './components/siteHeader'
@@ -39,6 +40,7 @@ const App = () => {
               <Route path="/movies/top_rated" element={<TopRatedPage/>}/>
               <Route path="/movies/trending" element={<TrendingPage/>}/>
               <Route path="/movies/:id" element={<MoviePage/>}/>
+              <Route path="/person/:id" element={<ActorDetailsPage/>}/>
               <Route path="/reviews/:id" element={ <MovieReviewPage /> }/>
               <Route path="/" element={<HomePage/>}/>
               <Route path="*" element={<Navigate to="/"/>}/>
