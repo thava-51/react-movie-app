@@ -77,3 +77,13 @@ export const getMoviefromPerson = ({ queryKey }) => {
   const [, { id }] = queryKey;
   return tmdbFetch(`person/${id}/movie_credits`, { language: "en-US" });
 };
+
+export const getRecommendations = ({ queryKey }) => {
+  const [, { id }] = queryKey;
+  return tmdbFetch(`movie/${id}/recommendations`, { language: "en-US" });
+};
+
+export const getSimilar = ({ queryKey }) => {
+  const [, { id }] = queryKey;
+  return tmdbFetch(`movie/${id}/similar`, { language: "en-US" });
+};

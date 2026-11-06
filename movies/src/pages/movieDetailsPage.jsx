@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { getMovie } from '../api/tmdb-api'
 import { useQuery } from '@tanstack/react-query';
 import Spinner from '../components/spinner'
@@ -11,6 +12,10 @@ const MoviePage = (props) => {
     queryKey: ['movie', {id: id}],
     queryFn: getMovie,
   })
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
 
   if (isPending) {
     return <Spinner />;

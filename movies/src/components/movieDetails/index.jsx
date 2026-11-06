@@ -12,6 +12,8 @@ import Drawer from "@mui/material/Drawer";
 
 import MovieReviews from "../movieReviews"
 import MovieCast from "../movieCast"
+import MovieRow from "../movieRow"
+import { getRecommendations, getSimilar } from "../../api/tmdb-api"
 
 const root = {
     display: "flex",
@@ -73,6 +75,18 @@ const MovieDetails = ({ movie }) => {  // Don't miss this!
         ))}
       </Paper>
       <MovieCast movie={movie} />
+      <MovieRow
+        title="Recommendations"
+        queryName="recommendations"
+        queryFn={getRecommendations}
+        movieId={movie.id}
+      />
+      <MovieRow
+        title="Similar Movies"
+        queryName="similar"
+        queryFn={getSimilar}
+        movieId={movie.id}
+      />
       <Fab
         color="secondary"
         variant="extended"
