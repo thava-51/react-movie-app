@@ -88,7 +88,17 @@ export const getRecommendations = ({ queryKey }) => {
   return tmdbFetch(`movie/${id}/recommendations`, { language: "en-US" });
 };
 
-export const getSimilar = ({ queryKey }) => {
+export const searchMulti = ({ queryKey }) => {
+  const [, { query }] = queryKey;
+  return tmdbFetch("search/multi", {
+    language: "en-US",
+    include_adult: false,
+    query,
+    page: 1,
+  });
+};
+
+export const getSimilar =({ queryKey }) => {
   const [, { id }] = queryKey;
   return tmdbFetch(`movie/${id}/similar`, { language: "en-US" });
 };

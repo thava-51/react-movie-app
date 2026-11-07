@@ -1,4 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Box from "@mui/material/Box";
+import InputBase from "@mui/material/InputBase";
+import SearchIcon from "@mui/icons-material/Search";
+import useDebounce from "../../hooks/useDebounce";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -7,7 +11,7 @@ import Button from "@mui/material/Button";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { styled } from '@mui/material/styles';
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -22,6 +26,24 @@ const SiteHeader = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const [searchText, setSearchText] = useState("");
+  const debouncedText = useDebounce(searchText, 500);
+
+  useEffect(() => {
+    const q = debouncedText.trim();
+    if (!q) return;
+    navigate(`/search?q=${encodeURIComponent(q)}`, {
+      replace: location.pathname === "/search",
+    });
+  }, [debouncedText]);
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    const q = searchText.trim();
+    if (q) navigate(`/search?q=${encodeURIComponent(q)}`);
+  };
 
   const menuOptions = [
     { label: "Home", path: "/" },
@@ -49,9 +71,30 @@ const SiteHeader = () => {
           <Typography variant="h4" sx={{ flexGrow: 1 }}>
             TMDB Client
           </Typography>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" sx={{ flexGrow: 1, display: { xs: "none", lg: "block" } }}>
             All you ever wanted to know about Movies!
           </Typography>
+          <Box
+            component="form"
+            onSubmit={handleSearchSubmit}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
+              borderRadius: 1,
+              px: 1,
+              mr: 2,
+            }}
+          >
+            <SearchIcon />
+            <InputBase
+              placeholder="Search movies & people…"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              inputProps={{ "aria-label": "search" }}
+              sx={{ color: "inherit", ml: 1, width: { xs: 120, md: 220 } }}
+            />
+          </Box>
             {isMobile ? (
               <>
                 <IconButton
