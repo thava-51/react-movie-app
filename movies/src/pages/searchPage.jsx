@@ -7,6 +7,8 @@ import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import PageTemplate from "../components/templateMovieListPage";
+import PaginationBar from "../components/paginationBar";
+import usePageParam from "../hooks/usePageParam";
 import Spinner from "../components/spinner";
 import AddToFavoritesIcon from "../components/cardIcons/addToFavorites";
 import { searchMulti } from "../api/tmdb-api";
@@ -15,9 +17,10 @@ import img from "../images/film-poster-placeholder.png";
 const SearchPage = () => {
   const [searchParams] = useSearchParams();
   const query = (searchParams.get("q") || "").trim();
+  const [page, setPage] = usePageParam();
 
   const { data, error, isPending, isError } = useQuery({
-    queryKey: ["search", { query }],
+    queryKey: ["search", { query, page }],
     queryFn: searchMulti,
     enabled: query.length > 0,
     placeholderData: keepPreviousData,
@@ -88,6 +91,8 @@ const SearchPage = () => {
           </Box>
         </Box>
       )}
+
+      <PaginationBar page={page} totalPages={data.total_pages} onChange={setPage} />
     </>
   );
 };

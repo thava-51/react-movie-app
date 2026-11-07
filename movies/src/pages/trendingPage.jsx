@@ -4,6 +4,8 @@ import Box from "@mui/material/Box";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import PageTemplate from "../components/templateMovieListPage";
+import PaginationBar from "../components/paginationBar";
+import usePageParam from "../hooks/usePageParam";
 import { getTrending } from "../api/tmdb-api";
 import Spinner from '../components/spinner';
 import AddToFavoritesIcon from '../components/cardIcons/addToFavorites';
@@ -13,12 +15,13 @@ const TrendingPage = () => {
   // a refresh and can be shared. Anything other than "week" means "day".
   const [searchParams, setSearchParams] = useSearchParams();
   const timeWindow = searchParams.get("window") === "week" ? "week" : "day";
+  const [page, setPage] = usePageParam();
 
   // The window is part of the query key, so "day" and "week" are cached
   // separately. keepPreviousData keeps the old list on screen while the
   // new one loads, so the page doesn't flash the spinner when toggling.
   const { data, error, isPending, isError } = useQuery({
-    queryKey: ['trending', { window: timeWindow }],
+    queryKey: ['trending', { window: timeWindow, page }],
     queryFn: getTrending,
     placeholderData: keepPreviousData,
   });
@@ -26,6 +29,7 @@ const TrendingPage = () => {
   // MUI sends null when the already-selected button is clicked again; ignore it.
   const handleWindowChange = (event, newWindow) => {
     if (newWindow !== null) {
+      // Replacing all params also drops ?page=, so switching window starts at page 1.
       setSearchParams({ window: newWindow });
     }
   };
@@ -61,6 +65,7 @@ const TrendingPage = () => {
           return <AddToFavoritesIcon movie={movie} />;
         }}
       />
+      <PaginationBar page={page} totalPages={data.total_pages} onChange={setPage} />
     </>
   );
 };

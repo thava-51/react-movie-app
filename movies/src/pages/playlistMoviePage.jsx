@@ -1,8 +1,10 @@
 import { useContext, useState } from "react";
 import PageTemplate from "../components/templateMovieListPage";
+import PaginationBar from "../components/paginationBar";
+import usePageParam from "../hooks/usePageParam";
 import { MoviesContext } from "../contexts/moviesContext";
 import { useQueries } from "@tanstack/react-query";
-import { getMovie } from "../api/tmdb-api";
+import { getMovie, PAGE_SIZE } from "../api/tmdb-api";
 import Spinner from '../components/spinner'
 import RemoveFromPlaylistIcon from "../components/cardIcons/removeFromPlaylist";
 import Box from "@mui/material/Box";
@@ -20,7 +22,14 @@ const PlaylistMoviesPage = () => {
   const [error, setError] = useState("");
 
   const current = playlists[selected] ? selected : names[0] ?? null;
-  const movieIds = current ? playlists[current] : [];
+  const allMovieIds = current ? playlists[current] : [];
+
+  // Playlists are stored locally, so paginate in the browser: only the ids on
+  // the current page are fetched. Clamp the page in case items were removed.
+  const [requestedPage, setPage] = usePageParam();
+  const totalPages = Math.max(1, Math.ceil(allMovieIds.length / PAGE_SIZE));
+  const page = Math.min(requestedPage, totalPages);
+  const movieIds = allMovieIds.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const playlistMovieQueries = useQueries({
     queries: movieIds.map((movieId) => {
@@ -46,7 +55,7 @@ const PlaylistMoviesPage = () => {
       {current && (
         <Tabs
           value={current}
-          onChange={(e, v) => setSelected(v)}
+          onChange={(e, v) => { setSelected(v); setPage(1); }}
           variant="scrollable"
           scrollButtons="auto"
         >
@@ -103,6 +112,7 @@ const PlaylistMoviesPage = () => {
         movies={movies}
         action={(movie) => <RemoveFromPlaylistIcon movie={movie} playlistName={current} />}
       />
+      <PaginationBar page={page} totalPages={totalPages} onChange={setPage} />
     </>
   );
 };

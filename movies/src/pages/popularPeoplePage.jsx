@@ -1,5 +1,7 @@
 import { Link } from "react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import PaginationBar from "../components/paginationBar";
+import usePageParam from "../hooks/usePageParam";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
@@ -11,9 +13,12 @@ import { getPopularPeople } from "../api/tmdb-api";
 import img from "../images/film-poster-placeholder.png";
 
 const PopularPeoplePage = () => {
+  const [page, setPage] = usePageParam();
+
   const { data, error, isPending, isError } = useQuery({
-    queryKey: ["popularPeople"],
+    queryKey: ["popularPeople", { page }],
     queryFn: getPopularPeople,
+    placeholderData: keepPreviousData,
   });
 
   if (isPending) {
@@ -60,6 +65,7 @@ const PopularPeoplePage = () => {
           </Grid>
         ))}
       </Grid>
+      <PaginationBar page={page} totalPages={data.total_pages} onChange={setPage} />
     </>
   );
 };

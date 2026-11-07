@@ -1,16 +1,22 @@
 import { useContext } from "react";
 import PageTemplate from "../components/templateMovieListPage";
+import PaginationBar from "../components/paginationBar";
+import usePageParam from "../hooks/usePageParam";
 import { MoviesContext } from "../contexts/moviesContext";
 import { useQueries } from "@tanstack/react-query";
-import { getMovie } from "../api/tmdb-api";
+import { getMovie, PAGE_SIZE } from "../api/tmdb-api";
 import Spinner from '../components/spinner'
 import RemoveFromFavorites from "../components/cardIcons/removeFromFavorites";
 import WriteReview from "../components/cardIcons/writeReview";
 
 const FavoriteMoviesPage = () => {
-  const {favorites: movieIds } = useContext(MoviesContext);
+  const {favorites: allMovieIds } = useContext(MoviesContext);
 
-  // Create an array of queries and run in parallel.
+  const [requestedPage, setPage] = usePageParam();
+  const totalPages = Math.max(1, Math.ceil(allMovieIds.length / PAGE_SIZE));
+  const page = Math.min(requestedPage, totalPages);
+  const movieIds = allMovieIds.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
   const favoriteMovieQueries = useQueries({
     queries: movieIds.map((movieId) => {
       return {
@@ -20,7 +26,6 @@ const FavoriteMoviesPage = () => {
     })
   });
   
-  // Check if any of the parallel queries is still loading.
   const isPending = favoriteMovieQueries.find((m) => m.isPending === true);
 
   if (isPending) {
@@ -35,18 +40,21 @@ const FavoriteMoviesPage = () => {
   const toDo = () => true;
 
   return (
-    <PageTemplate
-      title="Favourite Movies"
-      movies={movies}
-      action={(movie) => {
-        return (
-          <>
-            <RemoveFromFavorites movie={movie} />
-            <WriteReview movie={movie} />
-          </>
-        );
-      }}
-    />
+    <>
+      <PageTemplate
+        title="Favourite Movies"
+        movies={movies}
+        action={(movie) => {
+          return (
+            <>
+              <RemoveFromFavorites movie={movie} />
+              <WriteReview movie={movie} />
+            </>
+          );
+        }}
+      />
+      <PaginationBar page={page} totalPages={totalPages} onChange={setPage} />
+    </>
   );
 };
 

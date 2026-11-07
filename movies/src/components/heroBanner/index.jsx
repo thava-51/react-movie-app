@@ -9,7 +9,7 @@ const TEAL = "30, 90, 90";
 
 const HeroBanner = () => {
   const { data } = useQuery({
-    queryKey: ["trending", { window: "week" }],
+    queryKey: ["trending", { window: "week", page: 1 }],
     queryFn: getTrending,
   });
 
