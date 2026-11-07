@@ -3,10 +3,15 @@ import Header from "../headerMovieList";
 import FilterCard from "../filterMoviesCard";
 import MovieList from "../movieList";
 import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
 
-const SHOW_FILTERS = false;
-
-function MovieListPageTemplate({ movies, title, action, hideHeader = false }) {
+function MovieListPageTemplate({
+  movies,
+  title,
+  action,
+  hideHeader = false,
+  showFilters = true,
+}) {
   const [nameFilter, setNameFilter] = useState("");
   const [genreFilter, setGenreFilter] = useState("0");
   const [yearFilter, setYearFilter] = useState("");
@@ -61,12 +66,23 @@ function MovieListPageTemplate({ movies, title, action, hideHeader = false }) {
           <Header title={title} />
         </Grid>
       )}
-      <Grid container sx={{flex: "1 1 500px"}}>
-        {SHOW_FILTERS && (
-          <Grid
-            key="find"
-            size={{xs: 12, sm: 6, md: 4, lg: 3, xl: 2}}
-            sx={{padding: "20px"}}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          alignItems: "flex-start",
+          width: "100%",
+        }}
+      >
+        {showFilters && (
+          <Box
+            sx={{
+              width: { xs: "100%", md: 280 },
+              flexShrink: 0,
+              padding: 2,
+              position: { md: "sticky" },
+              top: { md: 16 },
+            }}
           >
             <FilterCard
               onUserInput={handleChange}
@@ -78,10 +94,16 @@ function MovieListPageTemplate({ movies, title, action, hideHeader = false }) {
               sortBy={sortBy}
               sortDir={sortDir}
             />
-          </Grid>
+          </Box>
         )}
-        <MovieList action={action} movies={displayedMovies}></MovieList>
-      </Grid>
+        <Box sx={{ flex: 1, minWidth: 0 }}>
+          <MovieList
+            action={action}
+            movies={displayedMovies}
+            compact={showFilters}
+          ></MovieList>
+        </Box>
+      </Box>
     </Grid>
   );
 }

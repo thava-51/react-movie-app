@@ -32,6 +32,7 @@ const HomePage = () => {
       <PageTemplate
         title='Discover Movies'
         hideHeader
+        showFilters={false}
         movies={movies}
         action={(movie) => {
           return <AddToFavoritesIcon movie={movie}/>

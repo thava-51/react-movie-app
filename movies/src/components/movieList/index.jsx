@@ -10,7 +10,7 @@ const MovieList = (props) => {
           xs: "1fr",
           sm: "repeat(2, 1fr)",
           md: "repeat(4, 1fr)",
-          lg: "repeat(8, 1fr)",
+          lg: props.compact ? "repeat(6, 1fr)" : "repeat(8, 1fr)",
         },
         gap: 2,
         padding: 2,

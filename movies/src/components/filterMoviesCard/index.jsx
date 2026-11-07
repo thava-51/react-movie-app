@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import Spinner from '../spinner';
 
 import Card from "@mui/material/Card";
-import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
@@ -14,15 +13,13 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Slider from "@mui/material/Slider";
 
-import img from '../../images/pexels-dziana-hasanbekava-5480827.jpg'
-
 import { getGenres } from "../../api/tmdb-api";
 
 const formControl = 
   {
     margin: 1,
     minWidth: "90%",
-    backgroundColor: "rgb(255, 255, 255)"
+    backgroundColor: "action.hover"
   };
 
 const languages = [
@@ -102,8 +99,12 @@ export default function FilterMoviesCard(props) {
   return (
     <Card 
       sx={{
-        backgroundColor: "rgb(204, 204, 0)"
-      }} 
+        backgroundColor: "background.paper",
+        color: "text.primary",
+        borderColor: "primary.main",
+        borderTop: "4px solid",
+        borderTopColor: "primary.main",
+      }}
       variant="outlined">
       <CardContent>
         <Typography variant="h5" component="h1">
@@ -205,18 +206,6 @@ export default function FilterMoviesCard(props) {
             <MenuItem value="desc">Descending</MenuItem>
           </Select>
         </FormControl>
-      </CardContent>
-      <CardMedia
-        sx={{ height: 300 }}
-        image={img}
-        title="Filter"
-      />
-      <CardContent>
-        <Typography variant="h5" component="h1">
-          <SearchIcon fontSize="large" />
-          Filter the movies.
-          <br />
-        </Typography>
       </CardContent>
     </Card>
   );
