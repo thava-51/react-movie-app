@@ -16,25 +16,20 @@ const tmdbFetch = (path, params = {}) => {
   });
 };
 
-export const getMovies = (pages = 5) => {
-  const requests = Array.from({ length: pages }, (_, i) =>
-    tmdbFetch("discover/movie", {
-      language: "en-US",
-      include_adult: false,
-      include_video: false,
-      page: i + 1,
-    })
-  );
-  return Promise.all(requests).then((responses) => ({
-    results: responses.flatMap((r) => r.results),
-  }));
+export const getMovies = ({ queryKey }) => {
+  const [, { page }] = queryKey;
+  return tmdbFetch("discover/movie", {
+    language: "en-US",
+    include_adult: false,
+    include_video: false,
+    page,
+  });
 };
 
 export const getUpcomingMovies = () => {
   return tmdbFetch("movie/upcoming", { language: "en-US", page: 1 });
 };
 
-// The functions below receive react-query's context object.
 export const getMovie = ({ queryKey }) => {
   const [, { id }] = queryKey;
   return tmdbFetch(`movie/${id}`);

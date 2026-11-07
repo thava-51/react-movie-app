@@ -1,14 +1,27 @@
-import React from "react";
 import Movie from "../movieCard/";
-import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
 
 const MovieList = (props) => {
-  let movieCards = props.movies.map((m) => (
-    <Grid key={m.id} size={{xs: 12, sm: 6, md: 4, lg: 3, xl: 2}} sx={{padding: "20px"}}>
-      <Movie key={m.id} movie={m} action={props.action}/>
-    </Grid>
-  ));
-  return movieCards;
+  return (
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateColumns: {
+          xs: "1fr",
+          sm: "repeat(2, 1fr)",
+          md: "repeat(4, 1fr)",
+          lg: "repeat(8, 1fr)",
+        },
+        gap: 2,
+        padding: 2,
+        width: "100%",
+      }}
+    >
+      {props.movies.map((m) => (
+        <Movie key={m.id} movie={m} action={props.action} />
+      ))}
+    </Box>
+  );
 };
 
 export default MovieList;

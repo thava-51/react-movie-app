@@ -4,6 +4,8 @@ import FilterCard from "../filterMoviesCard";
 import MovieList from "../movieList";
 import Grid from "@mui/material/Grid";
 
+const SHOW_FILTERS = false;
+
 function MovieListPageTemplate({ movies, title, action, hideHeader = false }) {
   const [nameFilter, setNameFilter] = useState("");
   const [genreFilter, setGenreFilter] = useState("0");
@@ -60,22 +62,24 @@ function MovieListPageTemplate({ movies, title, action, hideHeader = false }) {
         </Grid>
       )}
       <Grid container sx={{flex: "1 1 500px"}}>
-        <Grid 
-          key="find" 
-          size={{xs: 12, sm: 6, md: 4, lg: 3, xl: 2}} 
-          sx={{padding: "20px"}}
-        >
-          <FilterCard
-            onUserInput={handleChange}
-            titleFilter={nameFilter}
-            genreFilter={genreFilter}
-            yearFilter={yearFilter}
-            ratingFilter={ratingFilter}
-            languageFilter={languageFilter}
-            sortBy={sortBy}
-            sortDir={sortDir}
-          />
-        </Grid>
+        {SHOW_FILTERS && (
+          <Grid
+            key="find"
+            size={{xs: 12, sm: 6, md: 4, lg: 3, xl: 2}}
+            sx={{padding: "20px"}}
+          >
+            <FilterCard
+              onUserInput={handleChange}
+              titleFilter={nameFilter}
+              genreFilter={genreFilter}
+              yearFilter={yearFilter}
+              ratingFilter={ratingFilter}
+              languageFilter={languageFilter}
+              sortBy={sortBy}
+              sortDir={sortDir}
+            />
+          </Grid>
+        )}
         <MovieList action={action} movies={displayedMovies}></MovieList>
       </Grid>
     </Grid>
