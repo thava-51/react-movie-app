@@ -1,4 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import { ColorModeContext } from "../../contexts/colorModeContext";
 import Box from "@mui/material/Box";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
@@ -21,7 +24,6 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 
-// Shown in the dropdown under "Movies".
 const movieCategories = [
   { label: "Discover", path: "/" },
   { label: "Now Playing", path: "/movies/now_playing" },
@@ -30,20 +32,19 @@ const movieCategories = [
   { label: "Trending", path: "/movies/trending" },
 ];
 
-// The other top-level links.
 const mainLinks = [
   { label: "People", path: "/people" },
   { label: "Favourites", path: "/movies/favorites" },
   { label: "Playlist", path: "/movies/playlist" },
 ];
 
-// MUI buttons are ALL CAPS by default; "none" keeps the labels as written (first letter capital).
 const navButtonSx = { textTransform: "none", fontWeight: 700, fontSize: "1rem" };
 
 const SiteHeader = () => {
-  // Hamburger menu (mobile) and "Movies" dropdown (desktop) each need their own anchor.
   const [anchorEl, setAnchorEl] = useState(null);
   const [moviesAnchor, setMoviesAnchor] = useState(null);
+
+  const { mode, toggleColorMode } = useContext(ColorModeContext);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -51,9 +52,6 @@ const SiteHeader = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Search: the box is hidden until the icon is pressed. `searchText` updates on
-  // every keystroke, but `debouncedText` only changes after 500ms of no typing,
-  // so we navigate (and so fetch) once per pause.
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const debouncedText = useDebounce(searchText, 500);
@@ -61,14 +59,11 @@ const SiteHeader = () => {
   useEffect(() => {
     const q = debouncedText.trim();
     if (!q) return;
-    // Already on the results page: replace the entry so Back doesn't step through every search.
     navigate(`/search?q=${encodeURIComponent(q)}`, {
       replace: location.pathname === "/search",
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedText]);
 
-  // Pressing Enter skips the wait.
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     const q = searchText.trim();
@@ -88,7 +83,6 @@ const SiteHeader = () => {
 
   return (
     <>
-      {/* Uses theme.palette.primary (deep teal) so the orange logo stands out */}
       <AppBar position="fixed" color="primary">
         <Toolbar>
           <Box sx={{ flexGrow: 1 }}>
@@ -101,8 +95,6 @@ const SiteHeader = () => {
               />
             </Link>
           </Box>
-
-          {/* Search icon is always visible; the input appears only after it is pressed */}
           {searchOpen ? (
             <Box
               component="form"
@@ -134,6 +126,14 @@ const SiteHeader = () => {
               <SearchIcon />
             </IconButton>
           )}
+
+          <IconButton
+            aria-label={mode === "dark" ? "switch to light mode" : "switch to dark mode"}
+            color="inherit"
+            onClick={toggleColorMode}
+          >
+            {mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
+          </IconButton>
 
           {isMobile ? (
             <>

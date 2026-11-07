@@ -3,8 +3,7 @@ import { BrowserRouter, Route, Navigate, Routes } from "react-router";
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
-import { ThemeProvider } from "@mui/material/styles";
-import theme from "./theme";
+import ColorModeProvider from "./contexts/colorModeContext";
 import MoviesContextProvider from "./contexts/moviesContext";
 import AddMovieReviewPage from './pages/addMovieReviewPage'
 import HomePage from "./pages/homePage";
@@ -34,7 +33,7 @@ const queryClient = new QueryClient({
 const App = () => {
   return (
     <>
-      <ThemeProvider theme={theme}>
+      <ColorModeProvider>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <SiteHeader/>
@@ -59,7 +58,7 @@ const App = () => {
         </BrowserRouter>
         <ReactQueryDevtools initialIsOpen={false}/>
       </QueryClientProvider>
-      </ThemeProvider>
+      </ColorModeProvider>
     </>
   );
 };
