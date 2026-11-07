@@ -19,7 +19,7 @@ const ActorFilmography = ({ person }) => {
   });
 
   if (isPending) {
-    return <Spinner />;
+    return <Spinner inline />;
   }
 
   if (isError) {
