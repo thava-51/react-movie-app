@@ -6,10 +6,10 @@ const usePersistentState = (key, initialValue) => {
   const [value, setValue] = useState(() => {
     try {
       const stored = localStorage.getItem(key);
-      return stored !== null ? JSON.parse(stored) : initialValue;
+      if (stored !== null) return JSON.parse(stored);
     } catch {
-      return initialValue;
     }
+    return typeof initialValue === "function" ? initialValue() : initialValue;
   });
 
   useEffect(() => {
@@ -25,7 +25,14 @@ const usePersistentState = (key, initialValue) => {
 const MoviesContextProvider = (props) => {
   const [favorites, setFavorites] = usePersistentState("favorites", [])
   const [myReviews, setMyReviews] = useState( {} )
-  const [playlist, setPlaylist] = usePersistentState("playlist", [])
+  const [playlists, setPlaylists] = usePersistentState("playlists", () => {
+    try {
+      const old = JSON.parse(localStorage.getItem("playlist"));
+      if (Array.isArray(old)) return { "My Playlist": old };
+    } catch {
+    }
+    return { "My Playlist": [] };
+  })
 
   const addToFavorites = (movie) => {
     let newFavorites = [];
@@ -48,21 +55,29 @@ const MoviesContextProvider = (props) => {
     setMyReviews( {...myReviews, [movie.id]: review } )
   };
 
-  const addToPlaylist = (movie) => {
-    let newPlaylist = [];
-    if (!playlist.includes(movie.id)){
-      newPlaylist = [...playlist, movie.id];
-    }
-    else{
-      newPlaylist = [...playlist];
-    }
-    setPlaylist(newPlaylist)
+  const createPlaylist = (name) => {
+    const trimmed = name.trim();
+    if (!trimmed || playlists[trimmed]) return false;
+    setPlaylists({ ...playlists, [trimmed]: [] });
+    return true;
   };
 
-  const removeFromPlaylist = (movie) => {
-    setPlaylist( playlist.filter(
-      (mId) => mId !== movie.id
-    ) )
+  const deletePlaylist = (name) => {
+    const { [name]: removed, ...rest } = playlists;
+    setPlaylists(rest);
+  };
+
+  const addToPlaylist = (name, movie) => {
+    const ids = playlists[name] || [];
+    if (ids.includes(movie.id)) return;
+    setPlaylists({ ...playlists, [name]: [...ids, movie.id] });
+  };
+
+  const removeFromPlaylist = (name, movie) => {
+    setPlaylists({
+      ...playlists,
+      [name]: (playlists[name] || []).filter((mId) => mId !== movie.id),
+    });
   };
 
   return (
@@ -72,7 +87,9 @@ const MoviesContextProvider = (props) => {
         addToFavorites,
         removeFromFavorites,
         addReview,
-        playlist,
+        playlists,
+        createPlaylist,
+        deletePlaylist,
         addToPlaylist,
         removeFromPlaylist
       }}

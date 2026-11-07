@@ -1,15 +1,27 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import PageTemplate from "../components/templateMovieListPage";
 import { MoviesContext } from "../contexts/moviesContext";
 import { useQueries } from "@tanstack/react-query";
 import { getMovie } from "../api/tmdb-api";
 import Spinner from '../components/spinner'
 import RemoveFromPlaylistIcon from "../components/cardIcons/removeFromPlaylist";
+import Box from "@mui/material/Box";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 
 const PlaylistMoviesPage = () => {
-  const {playlist: movieIds } = useContext(MoviesContext);
+  const { playlists, createPlaylist, deletePlaylist } = useContext(MoviesContext);
+  const names = Object.keys(playlists);
+  const [selected, setSelected] = useState(names[0] ?? null);
+  const [newName, setNewName] = useState("");
+  const [error, setError] = useState("");
 
-  // Create an array of queries and run in parallel.
+  const current = playlists[selected] ? selected : names[0] ?? null;
+  const movieIds = current ? playlists[current] : [];
+
   const playlistMovieQueries = useQueries({
     queries: movieIds.map((movieId) => {
       return {
@@ -18,12 +30,64 @@ const PlaylistMoviesPage = () => {
       }
     })
   });
-  
-  // Check if any of the parallel queries is still loading.
+
+  const handleCreate = () => {
+    if (!createPlaylist(newName)) {
+      setError(newName.trim() ? "That name is already used" : "Enter a name");
+      return;
+    }
+    setSelected(newName.trim());
+    setNewName("");
+    setError("");
+  };
+
+  const controls = (
+    <Box sx={{ p: 2 }}>
+      {current && (
+        <Tabs
+          value={current}
+          onChange={(e, v) => setSelected(v)}
+          variant="scrollable"
+          scrollButtons="auto"
+        >
+          {names.map((n) => (
+            <Tab key={n} label={`${n} (${playlists[n].length})`} value={n} />
+          ))}
+        </Tabs>
+      )}
+      <Box sx={{ display: "flex", gap: 1, mt: 2, alignItems: "flex-start" }}>
+        <TextField
+          size="small"
+          label="New playlist name"
+          value={newName}
+          error={Boolean(error)}
+          helperText={error}
+          onChange={(e) => setNewName(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleCreate()}
+        />
+        <Button variant="contained" onClick={handleCreate}>Create</Button>
+        {current && (
+          <Button color="error" onClick={() => deletePlaylist(current)}>
+            Delete "{current}"
+          </Button>
+        )}
+      </Box>
+    </Box>
+  );
+
+  if (!current) {
+    return (
+      <>
+        {controls}
+        <Typography sx={{ p: 2 }}>No playlists yet. Create one above.</Typography>
+      </>
+    );
+  }
+
   const isPending = playlistMovieQueries.find((m) => m.isPending === true);
 
   if (isPending) {
-    return <Spinner />;
+    return <>{controls}<Spinner /></>;
   }
 
   const movies = playlistMovieQueries.map((q) => {
@@ -32,17 +96,14 @@ const PlaylistMoviesPage = () => {
   });
 
   return (
-    <PageTemplate
-      title="Playlist"
-      movies={movies}
-      action={(movie) => {
-        return (
-          <>
-          <RemoveFromPlaylistIcon movie={movie}/>
-          </>
-        );
-      }}
-    />
+    <>
+      {controls}
+      <PageTemplate
+        title={current}
+        movies={movies}
+        action={(movie) => <RemoveFromPlaylistIcon movie={movie} playlistName={current} />}
+      />
+    </>
   );
 };
 
