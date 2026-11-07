@@ -88,7 +88,11 @@ export const getRecommendations = ({ queryKey }) => {
   return tmdbFetch(`movie/${id}/recommendations`, { language: "en-US" });
 };
 
-export const searchMulti = ({ queryKey }) => {
+export const getPopularPeople = () => {
+  return tmdbFetch("person/popular", { language: "en-US", page: 1 });
+};
+
+export const searchMulti =({ queryKey }) => {
   const [, { query }] = queryKey;
   return tmdbFetch("search/multi", {
     language: "en-US",
