@@ -1,11 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export const MoviesContext = React.createContext(null);
 
+const usePersistentState = (key, initialValue) => {
+  const [value, setValue] = useState(() => {
+    try {
+      const stored = localStorage.getItem(key);
+      return stored !== null ? JSON.parse(stored) : initialValue;
+    } catch {
+      return initialValue;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch {
+    }
+  }, [key, value]);
+
+  return [value, setValue];
+};
+
 const MoviesContextProvider = (props) => {
-  const [favorites, setFavorites] = useState( [] )
+  const [favorites, setFavorites] = usePersistentState("favorites", [])
   const [myReviews, setMyReviews] = useState( {} )
-  const [playlist, setPlaylist] = useState( [] )
+  const [playlist, setPlaylist] = usePersistentState("playlist", [])
 
   const addToFavorites = (movie) => {
     let newFavorites = [];
@@ -39,6 +59,12 @@ const MoviesContextProvider = (props) => {
     setPlaylist(newPlaylist)
   };
 
+  const removeFromPlaylist = (movie) => {
+    setPlaylist( playlist.filter(
+      (mId) => mId !== movie.id
+    ) )
+  };
+
   return (
     <MoviesContext.Provider
       value={{
@@ -47,7 +73,8 @@ const MoviesContextProvider = (props) => {
         removeFromFavorites,
         addReview,
         playlist,
-        addToPlaylist
+        addToPlaylist,
+        removeFromPlaylist
       }}
     >
       {props.children}
