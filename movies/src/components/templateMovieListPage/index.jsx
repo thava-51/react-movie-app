@@ -10,6 +10,8 @@ function MovieListPageTemplate({ movies, title, action }) {
   const [yearFilter, setYearFilter] = useState("");
   const [ratingFilter, setRatingFilter] = useState(0);
   const [languageFilter, setLanguageFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("default");
+  const [sortDir, setSortDir] = useState("desc");
   const genreId = Number(genreFilter);
 
   let displayedMovies = movies
@@ -29,12 +31,25 @@ function MovieListPageTemplate({ movies, title, action }) {
       return languageFilter === "all" ? true : m.original_language === languageFilter;
     });
 
+  if (sortBy !== "default") {
+    const direction = sortDir === "asc" ? 1 : -1;
+    displayedMovies.sort((a, b) => {
+      if (sortBy === "title") return a.title.localeCompare(b.title) * direction;
+      if (sortBy === "release_date") {
+        return (a.release_date || "").localeCompare(b.release_date || "") * direction;
+      }
+      return ((a[sortBy] || 0) - (b[sortBy] || 0)) * direction; // popularity, vote_average
+    });
+  }
+
   const handleChange = (type, value) => {
     if (type === "name") setNameFilter(value);
     else if (type === "genre") setGenreFilter(value);
     else if (type === "year") setYearFilter(value);
     else if (type === "rating") setRatingFilter(value);
     else if (type === "language") setLanguageFilter(value);
+    else if (type === "sortBy") setSortBy(value);
+    else if (type === "sortDir") setSortDir(value);
   };
 
   return (
@@ -55,6 +70,8 @@ function MovieListPageTemplate({ movies, title, action }) {
             yearFilter={yearFilter}
             ratingFilter={ratingFilter}
             languageFilter={languageFilter}
+            sortBy={sortBy}
+            sortDir={sortDir}
           />
         </Grid>
         <MovieList action={action} movies={displayedMovies}></MovieList>

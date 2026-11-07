@@ -39,6 +39,14 @@ const languages = [
   { code: "ta", name: "Tamil" },
 ];
 
+const sortOptions = [
+  { value: "default", label: "Default" },
+  { value: "popularity", label: "Popularity" },
+  { value: "vote_average", label: "Rating" },
+  { value: "release_date", label: "Release date" },
+  { value: "title", label: "Title" },
+];
+
 export default function FilterMoviesCard(props) {
 
   const { data, error, isPending, isError } = useQuery({
@@ -81,6 +89,14 @@ export default function FilterMoviesCard(props) {
 
   const handleLanguageChange = (e) => {
     handleChange(e, "language", e.target.value);
+  };
+
+  const handleSortByChange = (e) => {
+    handleChange(e, "sortBy", e.target.value);
+  };
+
+  const handleSortDirChange = (e) => {
+    handleChange(e, "sortDir", e.target.value);
   };
 
   return (
@@ -159,6 +175,34 @@ export default function FilterMoviesCard(props) {
                 {lang.name}
               </MenuItem>
             ))}
+          </Select>
+        </FormControl>
+        <FormControl sx={{...formControl}}>
+          <InputLabel id="sort-by-label">Sort by</InputLabel>
+          <Select
+            labelId="sort-by-label"
+            id="sort-by-select"
+            value={props.sortBy}
+            onChange={handleSortByChange}
+          >
+            {sortOptions.map((opt) => (
+              <MenuItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl sx={{...formControl}}>
+          <InputLabel id="sort-dir-label">Order</InputLabel>
+          <Select
+            labelId="sort-dir-label"
+            id="sort-dir-select"
+            value={props.sortDir}
+            onChange={handleSortDirChange}
+            disabled={props.sortBy === "default"}
+          >
+            <MenuItem value="asc">Ascending</MenuItem>
+            <MenuItem value="desc">Descending</MenuItem>
           </Select>
         </FormControl>
       </CardContent>
