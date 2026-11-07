@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
+import logo from "../../images/Project Logo.png";
 import useDebounce from "../../hooks/useDebounce";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -68,9 +69,15 @@ const SiteHeader = () => {
     <>
       <AppBar position="fixed" color="secondary">
         <Toolbar>
-          <Typography variant="h4" sx={{ flexGrow: 1 }}>
-            TMDB Client
-          </Typography>
+          <Box sx={{ flexGrow: 1 }}>
+            <Box
+              component="img"
+              src={logo}
+              alt="Project logo - back to home"
+              onClick={() => navigate("/")}
+              sx={{ height: 44, display: "block", cursor: "pointer" }}
+            />
+          </Box>
           <Typography variant="h6" sx={{ flexGrow: 1, display: { xs: "none", lg: "block" } }}>
             All you ever wanted to know about Movies!
           </Typography>
