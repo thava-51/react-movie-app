@@ -19,7 +19,7 @@ export default function MovieReviews({ movie }) {
   });
   
   if (isPending) {
-    return <Spinner />;
+    return <Spinner inline />;
   }
 
   if (isError) {

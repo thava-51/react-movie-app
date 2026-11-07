@@ -19,7 +19,7 @@ const MovieCast = ({ movie }) => {
   });
 
   if (isPending) {
-    return <Spinner />;
+    return <Spinner inline />;
   }
 
   if (isError) {

@@ -1,15 +1,18 @@
+import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 
-export default function CircularIndeterminate() {
+export default function CircularIndeterminate({ inline = false }) {
   return (
-    <div sx={{
+    <Box
+      sx={{
         display: 'flex',
-        justifyContent: "center",
-        '& > * + *': {
-          marginLeft: '2em',
-        }}}>
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        minHeight: inline ? 120 : '60vh',
+      }}
+    >
       <CircularProgress />
-      <CircularProgress />
-    </div>
+    </Box>
   );
 }

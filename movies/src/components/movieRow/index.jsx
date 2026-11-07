@@ -18,7 +18,7 @@ const MovieRow = ({ title, queryName, queryFn, movieId }) => {
   });
 
   if (isPending) {
-    return <Spinner />;
+    return <Spinner inline />;
   }
 
   if (isError) {

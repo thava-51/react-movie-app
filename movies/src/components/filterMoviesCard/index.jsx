@@ -55,7 +55,7 @@ export default function FilterMoviesCard(props) {
   });
 
   if (isPending) {
-    return <Spinner />;
+    return <Spinner inline />;
   }
 
   if (isError) {
