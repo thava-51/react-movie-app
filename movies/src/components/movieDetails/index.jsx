@@ -13,6 +13,7 @@ import Drawer from "@mui/material/Drawer";
 import MovieReviews from "../movieReviews"
 import MovieCast from "../movieCast"
 import MovieRow from "../movieRow"
+import TrailerButton from "../trailerButton"
 import { getRecommendations, getSimilar } from "../../api/tmdb-api"
 
 const root = {
@@ -38,6 +39,8 @@ const MovieDetails = ({ movie }) => {  // Don't miss this!
       <Typography variant="h6" component="p">
         {movie.overview}
       </Typography>
+
+      <TrailerButton movie={movie} />
 
       <Paper 
         component="ul" 
