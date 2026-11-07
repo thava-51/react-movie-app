@@ -88,8 +88,8 @@ const SiteHeader = () => {
 
   return (
     <>
-      {/* Deep teal sampled from the flower photo's palette; makes the orange logo stand out */}
-      <AppBar position="fixed" sx={{ backgroundColor: "#1E5A5A", color: "#fff" }}>
+      {/* Uses theme.palette.primary (deep teal) so the orange logo stands out */}
+      <AppBar position="fixed" color="primary">
         <Toolbar>
           <Box sx={{ flexGrow: 1 }}>
             <Link to="/" aria-label="Go to home page" style={{ display: "inline-block" }}>

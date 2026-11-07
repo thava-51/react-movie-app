@@ -2,6 +2,7 @@ import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { useSearchParams } from "react-router";
 import Box from "@mui/material/Box";
 import Pagination from "@mui/material/Pagination";
+import HeroBanner from "../components/heroBanner";
 import PageTemplate from "../components/templateMovieListPage";
 import { getMovies } from "../api/tmdb-api";
 import Spinner from '../components/spinner';
@@ -39,6 +40,7 @@ const HomePage = () => {
 
   return (
     <>
+      <HeroBanner />
       <PageTemplate
         title='Discover Movies'
         hideHeader
