@@ -16,18 +16,44 @@ const tmdbFetch = (path, params = {}) => {
   });
 };
 
-export const getMovies = ({ queryKey }) => {
-  const [, { page }] = queryKey;
-  return tmdbFetch("discover/movie", {
-    language: "en-US",
-    include_adult: false,
-    include_video: false,
-    page,
+export const PAGE_SIZE = 24;
+const TMDB_PAGE_SIZE = 20;
+const TMDB_MAX_PAGES = 500; // TMDB rejects any page above this
+
+const getPagedList = (path, params, page) => {
+  const start = (page - 1) * PAGE_SIZE;
+  const firstTmdbPage = Math.floor(start / TMDB_PAGE_SIZE) + 1;
+  const lastTmdbPage = Math.min(Math.ceil((start + PAGE_SIZE) / TMDB_PAGE_SIZE), TMDB_MAX_PAGES);
+
+  const requests = [];
+  for (let p = firstTmdbPage; p <= lastTmdbPage; p++) {
+    requests.push(tmdbFetch(path, { ...params, page: p }));
+  }
+
+  return Promise.all(requests).then((responses) => {
+    const offset = start - (firstTmdbPage - 1) * TMDB_PAGE_SIZE;
+    const results = responses.flatMap((r) => r.results).slice(offset, offset + PAGE_SIZE);
+    const unique = [...new Map(results.map((m) => [m.id, m])).values()];
+    const totalResults = Math.min(responses[0].total_results, TMDB_MAX_PAGES * TMDB_PAGE_SIZE);
+    return {
+      results: unique,
+      total_pages: Math.ceil(totalResults / PAGE_SIZE),
+    };
   });
 };
 
-export const getUpcomingMovies = () => {
-  return tmdbFetch("movie/upcoming", { language: "en-US", page: 1 });
+export const getMovies = ({ queryKey }) => {
+  const [, { page }] = queryKey;
+  return getPagedList(
+    "discover/movie",
+    { language: "en-US", include_adult: false, include_video: false },
+    page
+  );
+};
+
+export const getUpcomingMovies = ({ queryKey }) => {
+  const [, { page }] = queryKey;
+  return getPagedList("movie/upcoming", { language: "en-US" }, page);
 };
 
 export const getMovie = ({ queryKey }) => {
@@ -55,17 +81,19 @@ export const getMovieCredits = ({ queryKey }) => {
 };
 
 // Additional filters apart from lab
-export const getNowPlaying = () => {
-  return tmdbFetch("movie/now_playing", { language: "en-US", page: 1 });
+export const getNowPlaying = ({ queryKey }) => {
+  const [, { page }] = queryKey;
+  return getPagedList("movie/now_playing", { language: "en-US" }, page);
 };
 
-export const getTopRated = () => {
-  return tmdbFetch("movie/top_rated", { language: "en-US", page: 1 });
+export const getTopRated = ({ queryKey }) => {
+  const [, { page }] = queryKey;
+  return getPagedList("movie/top_rated", { language: "en-US" }, page);
 };
 
 export const getTrending = ({ queryKey }) => {
-  const [, { window }] = queryKey;
-  return tmdbFetch(`trending/movie/${window}`, { language: "en-US", page: 1 });
+  const [, { window, page = 1 }] = queryKey;
+  return getPagedList(`trending/movie/${window}`, { language: "en-US" }, page);
 };
 
 export const getPerson = ({ queryKey }) => {
@@ -83,17 +111,23 @@ export const getRecommendations = ({ queryKey }) => {
   return tmdbFetch(`movie/${id}/recommendations`, { language: "en-US" });
 };
 
-export const getPopularPeople = () => {
-  return tmdbFetch("person/popular", { language: "en-US", page: 1 });
+export const getMovieVideos = ({ queryKey }) => {
+  const [, { id }] = queryKey;
+  return tmdbFetch(`movie/${id}/videos`, { language: "en-US" });
 };
 
-export const searchMulti =({ queryKey }) => {
-  const [, { query }] = queryKey;
+export const getPopularPeople = ({ queryKey }) => {
+  const [, { page }] = queryKey;
+  return tmdbFetch("person/popular", { language: "en-US", page });
+};
+
+export const searchMulti = ({ queryKey }) => {
+  const [, { query, page }] = queryKey;
   return tmdbFetch("search/multi", {
     language: "en-US",
     include_adult: false,
     query,
-    page: 1,
+    page,
   });
 };
 
