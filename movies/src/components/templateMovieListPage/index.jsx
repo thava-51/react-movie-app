@@ -4,7 +4,7 @@ import FilterCard from "../filterMoviesCard";
 import MovieList from "../movieList";
 import Grid from "@mui/material/Grid";
 
-function MovieListPageTemplate({ movies, title, action }) {
+function MovieListPageTemplate({ movies, title, action, hideHeader = false }) {
   const [nameFilter, setNameFilter] = useState("");
   const [genreFilter, setGenreFilter] = useState("0");
   const [yearFilter, setYearFilter] = useState("");
@@ -54,9 +54,11 @@ function MovieListPageTemplate({ movies, title, action }) {
 
   return (
     <Grid container>
-      <Grid size={12}>
-        <Header title={title} />
-      </Grid>
+      {!hideHeader && (
+        <Grid size={12}>
+          <Header title={title} />
+        </Grid>
+      )}
       <Grid container sx={{flex: "1 1 500px"}}>
         <Grid 
           key="find" 
