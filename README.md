@@ -4,7 +4,7 @@
 
 A movie discovery app built with React 19, Vite, Material UI and TanStack React Query, using data from [The Movie Database (TMDB)](https://www.themoviedb.org/) API. It extends the lab movie app with many new TMDB endpoints, actor pages, playlists, filtering, sorting, search, pagination, trailers and a dark/light theme.
 
-- **Demo video:** Placeholder
+- **Demo video:** https://youtu.be/A8cJWlCOIAw
 - **GitHub repo:** https://github.com/thava-51/react-movie-app
 
 ![alt text](images/homePage.png)
